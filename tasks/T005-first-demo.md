@@ -1,11 +1,11 @@
 # T005 — Primera demostración integrada
 
-- Estado: blocked
+- Estado: ready
 - Responsable: sin asignar
 - Revisor activo: ninguno
-- Actualizado: 2026-10-25
+- Actualizado: 2026-10-25T20:39:40.9910537-03:00
 - Dependencias: T003 y T004 done
-- Bloqueo: servidor y frontend pendientes
+- Bloqueo: ninguno
 
 ## Objetivo
 
@@ -33,3 +33,6 @@ Registrar comandos y evidencia del recorrido real con navegador. No afirmar vali
 ## Entrega
 
 Pendiente. Registrar evidencia, archivos, limitaciones, commit y revisión.
+
+
+Dependencias liberadas por Codex/01a17555-7620-77e3-9dd4-24056763a55e el 2026-10-25T20:39:40.9910537-03:00: T003 y T004 done. Sin implementación iniciada ni responsable reservado.

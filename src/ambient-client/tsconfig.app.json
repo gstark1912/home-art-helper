@@ -1,0 +1,27 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "src/env.d.ts"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts"
+  ]
+}
