@@ -1,0 +1,24 @@
+# Build y dependencias
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+**/TestResults/
+coverage/
+
+# Configuración local y secretos
+.env
+.env.*
+!.env.example
+**/appsettings.Local.json
+*.user
+*.suo
+.vs/
+.idea/
+
+# Salidas locales de herramientas
+.superpowers/
+*.log
+
+# .kiro/steering y tasks se versionan: no ignorarlos.
+tasks/.selection-lock/
