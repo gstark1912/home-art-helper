@@ -4,7 +4,35 @@ Cuadro digital ambiental doméstico: una tablet Android muestra contenido visual
 
 ## Estado actual
 
-Proyecto en preparación. Existe un diseño aprobado y una base de colaboración; todavía no hay aplicación ejecutable ni comandos de arranque. No se requiere comprar la tablet para comenzar: el display se validará primero en navegador y Android Emulator.
+Primera demostración integrada funcionando en local: el servidor .NET sirve el
+frontend compilado y publica cambios a los displays por SignalR. El recorrido
+**panel → servidor → display** (cambio de paleta/velocidad, apagado lógico en
+negro con pausa del render y encendido que restaura el contenido) está
+verificado con dos sesiones de navegador independientes. Tras reiniciar el
+servidor —estado y sesiones viven en memoria— el cliente detecta la sesión
+caducada y vuelve a pedir la clave; al reautenticar recibe el estado inicial
+vigente (nuevo `epoch`). No se requiere comprar la tablet para comenzar: el
+display se valida primero en navegador y Android Emulator. La validación real en
+Android queda pendiente de confirmación del usuario.
+
+### Ejecutar la demo local
+
+Requisitos: .NET SDK 10.0.401 (ver `global.json`) y Node.js ≥ 20.19.
+
+```powershell
+# 1. Compilar el frontend (genera src/ambient-client/dist)
+cd src/ambient-client; npm ci; npm run build; cd ../..
+
+# 2. Arrancar el servidor (pide la clave local; no se guarda en Git)
+./scripts/run-server.ps1
+```
+
+Abrir dos ventanas: `http://localhost:5189/control` (panel) y
+`http://localhost:5189/display`. Autenticar ambas con la clave y cambiar la
+animación desde el panel.
+
+Guía completa, puertos, modo con Vite y pruebas de integración:
+[runbook de desarrollo local](docs/runbooks/local-development.md).
 
 ## Arquitectura prevista
 

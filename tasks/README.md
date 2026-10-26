@@ -11,14 +11,16 @@ Una tarea por archivo `Txxx-descripcion.md`. El estado y responsable se consulta
 | [T003](T003-server-foundation.md) | Servidor autenticado, estado, API y SignalR | T001 | Servidor, solución, pruebas backend |
 | [T004](T004-client-foundation.md) | Panel separado y display Canvas | T001 | Aplicación Vue y pruebas frontend |
 | [T005](T005-first-demo.md) | Primera demostración integrada | T003 y T004 | Guía de ejecución, pruebas de integración, README |
+| [T006](T006-temporary-messages.md) | Mensajes temporales en el display | T005 | Backend + frontend de mensajes |
+| [T007](T007-simulated-music.md) | Música simulada y disco giratorio | T005 | Backend + frontend de música |
+| [T008](T008-android-validation.md) | Validación de extremo a extremo en Android Emulator | T005 | Runbooks de Android y desarrollo local |
 
 ## Qué se puede paralelizar
 
 - **Ahora:** T001 y T002; no comparten archivos. T002 puede documentar la instalación, pero la conexión final al servidor espera T005.
 - **Tras completar T001:** T003 y T004, con responsables diferentes. T003 es dueño de la solución .NET; T004 es dueño de `package.json` y el lockfile del frontend.
-- **Luego:** T005 integra ambos. Si surge un defecto que exige editar código reservado, asignar ese cambio al responsable correspondiente antes de trabajar simultáneamente.
-
-Mensajes temporales, música simulada y validación Android final siguen en el diseño, pero sus tareas detalladas se crearán después de verificar la primera demostración. No están autorizadas como trabajo paralelo sin definición de alcance.
+- **Tras completar T005:** T006, T007 y T008 pueden tomarse en paralelo, con una salvedad de alcance: T006 y T007 tocan **los mismos subárboles** (`src/Ambient.Server/**`, `tests/Ambient.Server.Tests/**` y `src/ambient-client/**`). Pueden avanzar en paralelo sólo si se reparten subárboles sin solaparse (p. ej. un agente el backend de T006 mientras otro el frontend de T007) y lo registran en cada tarea; de lo contrario, serializarlas. T008 es documental (runbooks) y requiere coordinación con el usuario para el emulador; no comparte archivos con T006/T007 y puede correr en paralelo con ellas.
+- Si surge un defecto que exige editar código reservado, asignar ese cambio al responsable correspondiente antes de trabajar simultáneamente.
 
 ## Cómo tomar una tarea
 

@@ -19,9 +19,9 @@ Las reglas comunes viven en `.kiro/steering/`. El diseño describe decisiones; `
 
 - Una tarea activa por agente salvo coordinación explícita. No modificar archivos reservados por otra tarea.
 - En un checkout compartido, las ramas no aíslan archivos: no hacer checkout, reset, clean, stash o rebase mientras otro agente trabaja. No revertir, borrar o reformatear cambios ajenos.
-- Para trabajo en checkouts separados, acordar rama/base y responsable de integración. No crear worktrees sin necesidad ni cambiar la ubicación acordada sin avisar.
+- Trabajar siempre en `main`, en este checkout. No crear ni usar worktrees ni ramas de trabajo. Esta es una instrucción explícita del usuario y prevalece sobre los flujos de skills que propongan aislamiento mediante ramas o worktrees.
 - Contratos, configuración raíz, dependencias y lockfiles requieren un único responsable activo. No instalar paquetes mientras otro agente modifica el mismo manifiesto/lockfile.
-- No hacer `git add .` ni commits que incluyan cambios de otro agente. Usar rutas explícitas y revisar el diff staged. No publicar, fusionar o pushear sin autorización del usuario.
+- No hacer `git add .` ni incluir cambios de tareas ajenas a la entrega revisada. Usar rutas explícitas y revisar el diff staged. Al finalizar exitosamente una revisión, el revisor debe commitear en `main` la entrega aprobada y su registro de revisión, y hacer push a `origin/main`. El usuario autoriza este cierre de forma permanente: no pedir confirmación adicional. No publicar entregas rechazadas o pendientes ni usar force push. Si el remoto avanzó o el push falla, conservar los cambios y registrar el impedimento; no sobrescribir trabajo remoto.
 - Si aparece trabajo nuevo, crear una tarea acotada con dependencias. No ampliar silenciosamente la tarea actual.
 - Avisar al usuario cuando una dependencia se libera y otra tarea puede paralelizarse; indicar ID, alcance y archivos.
 

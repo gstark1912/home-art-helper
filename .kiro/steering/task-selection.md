@@ -37,7 +37,7 @@ Este mecanismo sólo coordina agentes que comparten el mismo checkout. En clones
 Fuera del bloqueo, anunciar ID y objetivo, ejecutar y verificar según `collaboration.md`. Antes de cambiar estado para entregar, adquirir de nuevo el bloqueo y releer. Si está ocupado, conservar la reserva y reportar que falta publicar la entrega; no afirmar que el estado cambió.
 
 - Implementación terminada: dejar `review`, conservar autor, registrar evidencia, archivos, decisiones y pendientes; `Revisor activo: ninguno`.
-- Revisión aprobada: dejar `done`, registrar identidad y resultado y quitar revisor activo. Rehabilitar dependencias cuyo único impedimento desapareció, según las reglas anteriores.
+- Revisión aprobada: dejar `done`, registrar identidad y resultado y quitar revisor activo. Rehabilitar dependencias cuyo único impedimento desapareció, según las reglas anteriores. Completar el cierre con commit de la entrega aprobada en `main` y push a `origin/main`, según `collaboration.md`; comprobar el resultado e informar el hash y cualquier impedimento de publicación. No usar worktrees ni ramas de trabajo.
 - Revisión rechazada: registrar hallazgos, quitar revisor activo y dejar `ready` sin responsable activo para que se pueda reservar la corrección. Conservar autoría previa en Entrega.
 - Impedimento durante ejecución: guardar `blocked`, causa y entrega parcial; liberar responsable activo conservando identidad en Entrega. No desbloquear mientras persista esa causa.
 
