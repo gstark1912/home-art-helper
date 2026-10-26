@@ -18,6 +18,11 @@ public class BoundaryTests
     [InlineData("screen/on", "{")]
     [InlineData("screen/on", "{\"x\":1}")]
     [InlineData("mode", "{\"mode\":\"art\",\"mode\":\"music\"}")]
+    [InlineData("message", "{\"text\":\"hola\",\"priority\":3,\"durationSeconds\":30}")]
+    [InlineData("message", "{\"text\":\"hola\",\"priority\":0,\"durationSeconds\":0}")]
+    [InlineData("message", "{\"text\":\"hola\",\"priority\":0,\"durationSeconds\":301}")]
+    [InlineData("message", "{\"text\":\"hola\\u0007\",\"priority\":0,\"durationSeconds\":30}")]
+    [InlineData("message", "{\"text\":\"hola\",\"priority\":1.5,\"durationSeconds\":30}")]
     public async Task Strict_json_rejects_invalid_input_without_mutation(string path,string json)
     {
         using var app=new ServerFactory(); using var c=HttpTests.Client(app); await HttpTests.Login(c);
@@ -35,7 +40,6 @@ public class BoundaryTests
         Assert.Equal(HttpStatusCode.NotFound,(await c.GetAsync("/api/absent")).StatusCode);
         Assert.Equal(HttpStatusCode.MethodNotAllowed,(await c.GetAsync("/api/display/screen/on")).StatusCode);
         Assert.Equal(HttpStatusCode.BadRequest,(await c.PostAsJsonAsync("/api/display/message",new {text=" ",priority=0,durationSeconds=1})).StatusCode);
-        Assert.Equal(HttpStatusCode.NotImplemented,(await c.PostAsJsonAsync("/api/display/message",new {text="hello",priority=0,durationSeconds=1})).StatusCode);
         Assert.Equal(HttpStatusCode.NotImplemented,(await c.PostAsJsonAsync("/api/display/music",new {trackId="demo-01",title="Song",artist="Local",artworkId="cover-01",isPlaying=true})).StatusCode);
         c.DefaultRequestHeaders.Remove("Origin"); c.DefaultRequestHeaders.Add("Origin","http://evil.test");
         Assert.Equal(HttpStatusCode.Forbidden,(await c.PostAsJsonAsync("/api/display/screen/on",new {})).StatusCode);

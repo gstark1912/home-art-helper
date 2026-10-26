@@ -72,11 +72,13 @@ public static partial class Commands
         Text(j,"title",120); Text(j,"artist",120); Choice(j,"artworkId","cover-01","cover-02");
         if(j.GetProperty("isPlaying").ValueKind is not (JsonValueKind.True or JsonValueKind.False)) throw new RequestFault(400,"invalid_request");
     }
-    public static void Message(JsonElement j)
+    public static MessageCommand Message(JsonElement j)
     {
         var text=Text(j,"text",500);
         if(text.Any(c=>char.IsControl(c)&&c!='\n'&&c!='\t')) throw new RequestFault(400,"invalid_request");
-        Number(j,"priority",0,2,true); Number(j,"durationSeconds",1,300,true);
+        var priority=(int)Number(j,"priority",0,2,true);
+        var durationSeconds=(int)Number(j,"durationSeconds",1,300,true);
+        return new MessageCommand(text,priority,durationSeconds);
     }
     [GeneratedRegex(@"\A[A-Za-z0-9_-]+\z",RegexOptions.CultureInvariant)] private static partial Regex TrackId();
 }

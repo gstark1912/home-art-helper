@@ -5,6 +5,7 @@
 import type {
   AnimationCommand,
   ApiErrorBody,
+  MessageCommand,
   SessionState,
   Snapshot,
 } from '@/protocol/types'
@@ -177,4 +178,8 @@ export async function screenOff(): Promise<Snapshot> {
 
 export async function screenOn(): Promise<Snapshot> {
   return parseSnapshotResponse(await postJson<unknown>('/api/display/screen/on', {}))
+}
+
+export async function sendMessage(command: MessageCommand): Promise<Snapshot> {
+  return parseSnapshotResponse(await postJson<unknown>('/api/display/message', command))
 }

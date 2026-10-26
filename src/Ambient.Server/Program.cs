@@ -122,13 +122,10 @@ app.MapPost("/api/display/music",async (HttpRequest request)=>
     return Results.Empty;
     #pragma warning restore CS0162
 }).RequireAuthorization();
-app.MapPost("/api/display/message",async (HttpRequest request)=>
+app.MapPost("/api/display/message",async (HttpRequest request,DisplayState state)=>
 {
-    Commands.Message(await Commands.Read(request,"text","priority","durationSeconds"));
-    throw new RequestFault(501,"feature_not_available");
-    #pragma warning disable CS0162
-    return Results.Empty;
-    #pragma warning restore CS0162
+    var command=Commands.Message(await Commands.Read(request,"text","priority","durationSeconds"));
+    return await state.PostMessage(command);
 }).RequireAuthorization();
 app.MapHub<DisplayHub>("/hubs/display",o=> {o.CloseOnAuthenticationExpiration=true; o.AllowStatefulReconnects=false;});
 // Serve a built frontend when present, including publish output; never fall back for API/hub paths.

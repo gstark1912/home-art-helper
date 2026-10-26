@@ -64,6 +64,20 @@ export interface AnimationCommand {
   readonly bpm: number | null
 }
 
+/** Límites de message según el contrato (texto en unidades UTF-16). */
+export const MESSAGE_TEXT_MAX = 500
+export const MESSAGE_PRIORITY_MIN = 0
+export const MESSAGE_PRIORITY_MAX = 2
+export const MESSAGE_DURATION_MIN = 1
+export const MESSAGE_DURATION_MAX = 300
+
+/** Cuerpo exacto de POST /api/display/message. El cliente no envía id ni fechas. */
+export interface MessageCommand {
+  readonly text: string
+  readonly priority: number
+  readonly durationSeconds: number
+}
+
 /** Forma exacta de error de aplicación. */
 export interface ApiErrorBody {
   readonly error: {

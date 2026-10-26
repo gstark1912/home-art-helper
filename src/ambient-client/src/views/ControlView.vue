@@ -10,8 +10,14 @@ import {
   screenOff as apiScreenOff,
   screenOn as apiScreenOn,
   sendAnimation,
+  sendMessage as apiSendMessage,
 } from '@/api/client'
 import {
+  MESSAGE_DURATION_MAX,
+  MESSAGE_DURATION_MIN,
+  MESSAGE_PRIORITY_MAX,
+  MESSAGE_PRIORITY_MIN,
+  MESSAGE_TEXT_MAX,
   PALETTES,
   type AnimationCommand,
   type Palette,
@@ -27,6 +33,13 @@ const sending = ref(false)
 
 const animation = computed(() => snapshot.value?.animation ?? null)
 const screenIsOn = computed(() => snapshot.value?.screenOn ?? false)
+const activeMessage = computed(() => snapshot.value?.message ?? null)
+
+// Formulario de mensaje temporal.
+const messageText = ref('')
+const messagePriority = ref(MESSAGE_PRIORITY_MIN)
+const messageDuration = ref(30)
+const canSendMessage = computed(() => messageText.value.trim().length > 0)
 
 const connectionLabel = computed(() => {
   switch (connectionStatus.value) {
@@ -92,6 +105,9 @@ function describeError(error: unknown): string {
     if (error.code === 'feature_not_available') {
       return 'Esa función aún no está disponible.'
     }
+    if (error.code === 'message_priority_conflict') {
+      return 'Hay un mensaje de mayor prioridad en pantalla. Probá con una prioridad mayor o igual.'
+    }
     return error.message || 'El comando falló.'
   }
   if (error instanceof NetworkError) {
@@ -147,6 +163,22 @@ async function setSpeed(value: number): Promise<void> {
 
 async function toggleScreen(): Promise<void> {
   await runCommand(() => (screenIsOn.value ? apiScreenOff() : apiScreenOn()))
+}
+
+async function sendMessage(): Promise<void> {
+  const text = messageText.value.trim()
+  if (text.length === 0) return
+  await runCommand(() =>
+    apiSendMessage({
+      text,
+      priority: messagePriority.value,
+      durationSeconds: messageDuration.value,
+    }),
+  )
+  // Limpiar el texto sólo si el comando no dejó error (p. ej. 409 lo conserva).
+  if (commandError.value === null) {
+    messageText.value = ''
+  }
 }
 
 const speedModel = computed({
@@ -218,6 +250,53 @@ const speedModel = computed({
           @click="toggleScreen"
         >
           {{ screenIsOn ? 'Apagar display' : 'Encender display' }}
+        </button>
+      </section>
+
+      <section class="control__group">
+        <h2 class="control__label">Mensaje temporal</h2>
+        <p v-if="activeMessage" class="control__hint">
+          En pantalla (prioridad {{ activeMessage.priority }}): {{ activeMessage.text }}
+        </p>
+        <textarea
+          v-model="messageText"
+          class="control__textarea"
+          rows="2"
+          :maxlength="MESSAGE_TEXT_MAX"
+          placeholder="Ej.: La cena está lista"
+          :disabled="!snapshot || sending"
+        />
+        <div class="control__message-row">
+          <label class="control__field">
+            Prioridad
+            <select v-model.number="messagePriority" :disabled="!snapshot || sending">
+              <option
+                v-for="p in [MESSAGE_PRIORITY_MIN, 1, MESSAGE_PRIORITY_MAX]"
+                :key="p"
+                :value="p"
+              >
+                {{ p }}
+              </option>
+            </select>
+          </label>
+          <label class="control__field">
+            Duración (s)
+            <input
+              v-model.number="messageDuration"
+              type="number"
+              :min="MESSAGE_DURATION_MIN"
+              :max="MESSAGE_DURATION_MAX"
+              :disabled="!snapshot || sending"
+            />
+          </label>
+        </div>
+        <button
+          class="control__send"
+          type="button"
+          :disabled="!snapshot || sending || !canSendMessage"
+          @click="sendMessage"
+        >
+          Enviar mensaje
         </button>
       </section>
 
@@ -339,6 +418,58 @@ const speedModel = computed({
 .control__pending {
   color: #94a3b8;
   margin: 0;
+}
+.control__hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.control__textarea {
+  width: 100%;
+  resize: vertical;
+  padding: 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #e2e8f0;
+  font: inherit;
+}
+.control__message-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.control__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+.control__field select,
+.control__field input {
+  padding: 0.4rem;
+  border-radius: 0.4rem;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #e2e8f0;
+  font: inherit;
+}
+.control__send {
+  align-self: flex-start;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: #2563eb;
+  color: white;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.control__send:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 .control__error {
   margin: 0;

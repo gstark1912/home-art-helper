@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import LoginForm from '@/components/LoginForm.vue'
 import ParticleCanvas from '@/components/ParticleCanvas.vue'
+import MessageOverlay from '@/components/MessageOverlay.vue'
 import { useAuth } from '@/composables/useAuth'
 import { useDisplayConnection } from '@/composables/useDisplayConnection'
 
@@ -16,6 +17,10 @@ const animation = computed(() => snapshot.value?.animation ?? null)
 
 // El render se detiene si la pantalla está apagada (precedencia visual).
 const renderActive = computed(() => screenOn.value && snapshot.value !== null)
+
+// El mensaje tiene precedencia sobre el modo base, pero no sobre el apagado.
+const message = computed(() => snapshot.value?.message ?? null)
+const serverTimeUtc = computed(() => snapshot.value?.serverTimeUtc ?? null)
 
 onMounted(async () => {
   await refreshSession()
@@ -63,6 +68,14 @@ async function enterFullscreen(): Promise<void> {
         :class="{ 'display__canvas--hidden': !screenOn }"
         :animation="animation"
         :active="renderActive"
+      />
+
+      <!-- Mensaje temporal: precedencia sobre el modo base, nunca sobre el apagado. -->
+      <MessageOverlay
+        v-if="screenOn && message && serverTimeUtc"
+        :key="message.id"
+        :message="message"
+        :server-time-utc="serverTimeUtc"
       />
 
       <!-- Apagado lógico: negro con precedencia sobre el contenido. -->
